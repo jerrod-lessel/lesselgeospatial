@@ -296,6 +296,7 @@
 
     function escHtml(str) {
       return String(str)
+        .replace(/]*>|<\/antml:cite>/g, '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
