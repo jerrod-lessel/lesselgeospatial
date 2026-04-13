@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geospatial Manifold | LGeo</title>
+  <meta name="description" content="A pre-disaster urban resilience auditing platform for city planners." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="logo"><span class="green">L</span>essel<span class="green">Geo</span>spatial</a>
+    <ul class="nav-links">
+      <li><a href="../../#projects">Projects</a></li>
+      <li><a href="../../#about">About</a></li>
+      <li><a href="../geoganda/">Geoganda</a></li>
+      <li><a href="https://github.com/jerrod-lessel" target="_blank">GitHub</a></li>
+      <li><a href="https://www.linkedin.com/in/jerrod-lessel-18023875/" target="_blank">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="eyebrow">Project</div>
+    <h1 class="headline">Geospatial<br><em>Manifold</em></h1>
+    <p class="sub">A pre-disaster urban resilience auditing platform for city planners. Analyzes road network vulnerability and identifies critical failure points before disaster strikes -- not after.</p>
+    <div class="cta-row">
+      <a class="btn-primary" href="https://github.com/jerrod-lessel" target="_blank">View on GitHub →</a>
+      <a class="btn-ghost" href="../../#projects">Back to projects</a>
+    </div>
+  </section>
+
+  <div class="credentials">
+    <div class="cred"><span class="cred-label">Type</span><span class="cred-value">Open-source tool</span></div>
+    <div class="cred"><span class="cred-label">Stack</span><span class="cred-value">Python, OSMnx, NetworkX</span></div>
+    <div class="cred"><span class="cred-label">Focus</span><span class="cred-value">Urban Resilience</span></div>
+    <div class="cred"><span class="cred-label">Status</span><span class="cred-value">In development</span></div>
+  </div>
+
+  <section class="section">
+    <div class="section-label">The problem</div>
+    <div class="project-card">
+      <p class="project-desc">Most urban resilience tools are built for emergency managers after disaster strikes. By then the road is already underwater, the bridge is already gone, and the evacuation route is already blocked. Geospatial Manifold is built for the people who can actually do something about it before that happens -- city planners, urban analysts, and resilience researchers who need to understand where their road networks are most vulnerable before the next earthquake, flood, or wildfire tests them.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">How it works</div>
+    <div class="project-card">
+      <div class="project-tag">Road network analysis</div>
+      <h2 class="project-title">Network vulnerability mapping</h2>
+      <p class="project-desc">Uses OSMnx to pull real road network data for any city or region, then runs graph-theory analysis via NetworkX to identify critical nodes and edges -- the roads and intersections whose failure would most severely fragment the network.</p>
+      <div class="project-meta">
+        <span class="tag">OSMnx</span>
+        <span class="tag">NetworkX</span>
+        <span class="tag">OpenStreetMap</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-tag">Resilience scoring</div>
+      <h2 class="project-title">Pre-disaster auditing</h2>
+      <p class="project-desc">Generates resilience scores and vulnerability maps that planners can use to prioritize infrastructure investment, identify redundancy gaps, and model how the network would perform under various failure scenarios.</p>
+      <div class="project-meta">
+        <span class="tag">Python</span>
+        <span class="tag">Graph Theory</span>
+        <span class="tag">Urban Planning</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span class="footer-copy">Spatial analysis for a surprisingly spacious world.</span>
+    <ul class="social-links">
+      <li><a href="https://www.linkedin.com/in/jerrod-lessel-18023875/" target="_blank">LinkedIn</a></li>
+      <li><a href="https://github.com/jerrod-lessel" target="_blank">GitHub</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    document.querySelector('.nav-toggle').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
