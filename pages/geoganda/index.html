@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Geoganda | LGeo</title>
+  <meta name="description" content="A daily geospatial news briefing with an agenda. Finding the ground truth in geospatial news." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/style.css" />
+  <style>
+    /* GEOGANDA HIJACK AESTHETIC */
+    .gg-header {
+      padding: 3rem 0 2rem;
+      border-bottom: 0.5px solid var(--border);
+      position: relative;
+    }
+
+    .gg-stamp {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: 1.5px solid var(--green);
+      color: var(--green);
+      padding: 4px 10px;
+      margin-bottom: 1.5rem;
+      transform: rotate(-1.5deg);
+      display: inline-block;
+    }
+
+    .gg-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 600;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    .gg-title em { font-style: italic; color: var(--green); }
+
+    .gg-tagline {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+    }
+
+    .gg-transmission {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gg-signal {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    /* ARTICLES */
+    .gg-feed {
+      padding: 3rem 0;
+    }
+
+    .gg-article {
+      border: 0.5px solid var(--border);
+      padding: 1.75rem;
+      margin-bottom: 1rem;
+      position: relative;
+      background: var(--bg);
+      transition: border-color 0.2s;
+    }
+
+    .gg-article:hover { border-color: var(--green); }
+
+    .gg-article-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .gg-article-source {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+
+    .gg-article-category {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 0.5px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .gg-article-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 300;
+      line-height: 1.3;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      text-decoration: none;
+      display: block;
+    }
+
+    .gg-article-title:hover { color: var(--green); }
+
+    .gg-article-summary {
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-mid);
+      margin-bottom: 1rem;
+    }
+
+    .gg-article-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .gg-read-link {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    .gg-read-link:hover { text-decoration: underline; }
+
+    /* LOADING STATE */
+    .gg-loading {
+      padding: 4rem 0;
+      text-align: center;
+    }
+
+    .gg-loading-text {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      animation: blink 1.4s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    /* ERROR STATE */
+    .gg-error {
+      padding: 3rem 0;
+      border: 0.5px solid var(--border);
+      text-align: center;
+    }
+
+    .gg-error-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .gg-date-badge {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 3rem 0 0;
+      border-top: 0.5px solid var(--border);
+      margin-top: 1rem;
+    }
+
+    .gg-scanline {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0.4;
+      animation: scan 3s linear infinite;
+    }
+
+    @keyframes scan {
+      0% { transform: translateY(0); opacity: 0.4; }
+      100% { transform: translateY(200px); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="logo"><span class="green">L</span>essel<span class="green">Geo</span>spatial</a>
+    <ul class="nav-links">
+      <li><a href="../../#projects">Projects</a></li>
+      <li><a href="../../#about">About</a></li>
+      <li><a href="./" class="active">Geoganda</a></li>
+      <li><a href="https://github.com/jerrod-lessel" target="_blank">GitHub</a></li>
+      <li><a href="https://www.linkedin.com/in/jerrod-lessel-18023875/" target="_blank">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+  </nav>
+
+  <header class="gg-header">
+    <div class="gg-scanline"></div>
+    <div class="gg-stamp">Transmission intercepted</div>
+    <h1 class="gg-title">Project <em>Geoganda</em></h1>
+    <p class="gg-tagline">Finding the ground truth in geospatial news.</p>
+    <div class="gg-transmission">
+      <div class="gg-signal"></div>
+      <span>Daily broadcast -- updated every 24 hours</span>
+    </div>
+  </header>
+
+  <section class="gg-feed">
+    <div id="gg-content">
+      <div class="gg-loading">
+        <div class="gg-loading-text">Intercepting transmission...</div>
+      </div>
+    </div>
+    <div class="gg-date-badge" id="gg-date"></div>
+  </section>
+
+  <footer class="footer">
+    <span class="footer-copy">Spatial analysis for a surprisingly spacious world.</span>
+    <ul class="social-links">
+      <li><a href="https://www.linkedin.com/in/jerrod-lessel-18023875/" target="_blank">LinkedIn</a></li>
+      <li><a href="https://github.com/jerrod-lessel" target="_blank">GitHub</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    const categories = ['Remote Sensing', 'Disaster Risk', 'Urban Planning', 'Climate', 'Satellite', 'GIS', 'Oceanography', 'Agriculture'];
+
+    function getCategory(title) {
+      const t = title.toLowerCase();
+      if (t.includes('flood') || t.includes('fire') || t.includes('disaster') || t.includes('earthquake') || t.includes('hurricane')) return 'Disaster Risk';
+      if (t.includes('satellite') || t.includes('remote sensing') || t.includes('radar') || t.includes('lidar')) return 'Remote Sensing';
+      if (t.includes('city') || t.includes('urban') || t.includes('road') || t.includes('infrastructure')) return 'Urban Planning';
+      if (t.includes('climate') || t.includes('carbon') || t.includes('temperature') || t.includes('sea level')) return 'Climate';
+      if (t.includes('crop') || t.includes('farm') || t.includes('agriculture') || t.includes('food')) return 'Agriculture';
+      if (t.includes('ocean') || t.includes('sea') || t.includes('marine')) return 'Oceanography';
+      return 'GIS';
+    }
+
+    function renderArticles(articles, fromCache) {
+      const container = document.getElementById('gg-content');
+      const dateEl = document.getElementById('gg-date');
+
+      if (!articles || articles.length === 0) {
+        container.innerHTML = `
+          <div class="gg-error">
+            <p class="gg-error-text">The transmission failed to come through today.<br>Check back soon -- the rogue analyst is working on it.</p>
+          </div>`;
+        return;
+      }
+
+      const html = articles.map((a, i) => `
+        <article class="gg-article">
+          <div class="gg-article-header">
+            <span class="gg-article-source">${escHtml(a.source || 'Unknown source')}</span>
+            <span class="gg-article-category">${escHtml(getCategory(a.title || ''))}</span>
+          </div>
+          <a class="gg-article-title" href="${escHtml(a.url || '#')}" target="_blank" rel="noopener">${escHtml(a.title || 'Untitled')}</a>
+          <p class="gg-article-summary">${escHtml(a.summary || '')}</p>
+          <div class="gg-article-footer">
+            <a class="gg-read-link" href="${escHtml(a.url || '#')}" target="_blank" rel="noopener">Read full article →</a>
+          </div>
+        </article>
+      `).join('');
+
+      container.innerHTML = html;
+      dateEl.textContent = fromCache
+        ? 'Transmission cached -- last broadcast: today'
+        : 'Transmission received: ' + new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    async function loadBriefing() {
+      try {
+        const res = await fetch('/api/geoganda');
+        if (!res.ok) throw new Error('fetch failed');
+        const data = await res.json();
+        renderArticles(data.articles, data.fromCache);
+      } catch (err) {
+        document.getElementById('gg-content').innerHTML = `
+          <div class="gg-error">
+            <p class="gg-error-text">Signal lost. The rogue analyst is probably dealing with a bad projection system.<br>Try again in a bit.</p>
+          </div>`;
+      }
+    }
+
+    document.querySelector('.nav-toggle').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('open');
+    });
+
+    loadBriefing();
+  </script>
+</body>
+</html>
