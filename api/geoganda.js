@@ -50,12 +50,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Secret flush URL -- visit /api/geoganda?flush=YOUR_FLUSH_SECRET to clear cache
-  if (req.query.flush === process.env.FLUSH_SECRET) {
-    await redis.del(CACHE_KEY);
-    return res.status(200).json({ message: "Cache cleared" });
-  }
-  
   try {
     // Check cache first
     const cached = await redis.get(CACHE_KEY);
