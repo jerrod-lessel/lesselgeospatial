@@ -72,8 +72,10 @@ export default async function handler(req, res) {
       .map((block) => block.text)
       .join("");
 
-    // Parse JSON -- strip any accidental markdown fences
-    const clean = textContent.replace(/```json|```/g, "").trim();
+    // Extract JSON -- find the first { and last } to handle any preamble
+    const jsonMatch = textContent.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON found in response");
+    const clean = jsonMatch[0].replace(/```json|```/g, "").trim();
     const parsed = JSON.parse(clean);
 
     // Validate structure
