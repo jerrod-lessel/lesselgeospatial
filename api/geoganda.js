@@ -18,6 +18,7 @@ Rules:
 - Write like a human who is slightly unhinged about maps.
 - Summaries should be 2-3 sentences. Informative but not dry.
 - If a sentence is boring, make it less boring. If it cannot be made less boring, at least make it accurate.
+- Never include citation tags, reference markers, index tags, or any markup in your summaries. Plain text only.
 - Return ONLY valid JSON, no markdown, no backticks, no preamble.`;
 
 const USER_PROMPT = `Search the web for 5 recent and interesting geospatial news articles from the past week. Focus on: remote sensing, satellite imagery, disaster risk, urban resilience, climate monitoring, GIS tools, earth observation, or spatial data science. Prioritize research findings, new tools, and genuinely interesting developments over press releases or product announcements (unless the product announcement is actually interesting or newsworthy).
