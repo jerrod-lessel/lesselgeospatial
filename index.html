@@ -9,6 +9,69 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    .pub-rotator {
+      position: relative;
+      min-height: 120px;
+    }
+    .pub-entry {
+      transition: opacity 0.5s ease;
+    }
+    .pub-entry.fade { opacity: 0; }
+    .pub-counter {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted, #888);
+      margin-top: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pub-counter-dots {
+      display: flex;
+      gap: 5px;
+    }
+    .pub-counter-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--border-mid, rgba(0,0,0,0.2));
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .pub-counter-dot.active { background: #1D9E75; }
+    .pub-first-author {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      background: #e1f5ee;
+      color: #0F6E56;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .pub-type {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      background: var(--bg-secondary, #f7f6f3);
+      color: var(--text-muted, #888);
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .pub-doi {
+      display: inline-block;
+      font-size: 11px;
+      color: #1D9E75;
+      text-decoration: none;
+      margin-top: 6px;
+    }
+    .pub-doi:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
   <nav class="nav">
@@ -36,7 +99,7 @@
   </section>
 
   <div class="credentials">
-    <div class="cred"><span class="cred-label">Published in</span><span class="cred-value">Science & IJRS</span></div>
+    <div class="cred"><span class="cred-label">Published in</span><span class="cred-value">Science &amp; IJRS</span></div>
     <div class="cred"><span class="cred-label">Experience</span><span class="cred-value">14+ Years</span></div>
     <div class="cred"><span class="cred-label">Former Fellow</span><span class="cred-value">NASA DEVELOP</span></div>
     <div class="cred"><span class="cred-label">Background</span><span class="cred-value">Geology + GIS + Remote Sensing</span></div>
@@ -46,7 +109,7 @@
     <div class="section-label">Projects</div>
 
     <div class="project-card">
-      <a class="project-link" href="https://jerrod-lessel.github.io/geospatial_manifold/#" target="_blank">View project →</a>
+      <a class="project-link" href="https://jerrod-lessel.github.io/geospatial_manifold/#" target="_blank">View project &rarr;</a>
       <div class="project-tag">Flagship tool</div>
       <h2 class="project-title">Geospatial Manifold</h2>
       <p class="project-desc">A pre-disaster urban resilience auditing platform for city planners. Analyzes road network vulnerability and identifies critical failure points before disaster strikes -- not after.</p>
@@ -60,7 +123,7 @@
     </div>
 
     <div class="project-card">
-      <a class="project-link" href="pages/geoganda/">View project →</a>
+      <a class="project-link" href="pages/geoganda/">View project &rarr;</a>
       <div class="project-tag">Daily briefing</div>
       <h2 class="project-title">Project Geoganda</h2>
       <p class="project-desc">A daily geospatial news briefing with an agenda -- finding the ground truth in geospatial news. Curated by AI, filtered by taste, delivered with a slight edge.</p>
@@ -85,12 +148,21 @@
     <div class="about-content">
       <p class="about-text">
         <strong>Jerrod Lessel</strong> is a senior geospatial analyst and remote sensing researcher with deep experience in production-scale satellite imagery analysis, climate monitoring, and spatial modeling.<br><br>
-        Previously at <strong>Gro Intelligence</strong> for eight years, building crop classification systems, flood and drought monitoring pipelines, and remote sensing methodology across dozens of countries using Google Earth Engine. Former fellow with <strong>NASA DEVELOP</strong> and research staff at <strong>Columbia University's International Research Institute for Climate and Society</strong>. Currently a Senior Research Data Specialist at <strong>Caltrans</strong>.
+        Previously at <strong>Gro Intelligence</strong> for eight years, building crop classification systems, flood and drought monitoring pipelines, and remote sensing methodology across dozens of countries using Google Earth Engine. Former fellow with <strong>NASA DEVELOP</strong> and research staff at <strong>Columbia University's International Research Institute for Climate and Society</strong>. Currently a Senior GIS Analyst at <strong>Caltrans</strong>.
       </p>
+
       <div class="pub">
-        <div class="pub-label">Peer-reviewed publication</div>
-        <div class="pub-title">A global surveillance system for crop diseases</div>
-        <div class="pub-meta">Carvajal-Yepes, M., Cardwell, K., Nelson, A., Garrett, K.A., Giovani, B., Saunders, D.G., Kamoun, S., Legg, J.P., Verdier, V., Lessel, J. and Neher, R.A. -- Science, 364(6447), pp.1237-1239, 2019</div>
+        <div class="pub-label">Publications <span id="pub-count-display"></span></div>
+        <div class="pub-rotator">
+          <div class="pub-entry" id="pub-entry">
+            <div class="pub-title" id="pub-title"></div>
+            <div class="pub-meta" id="pub-meta"></div>
+            <a class="pub-doi" id="pub-doi" href="#" target="_blank" rel="noopener"></a>
+          </div>
+        </div>
+        <div class="pub-counter">
+          <div class="pub-counter-dots" id="pub-dots"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -104,6 +176,7 @@
   </footer>
 
   <script>
+    // QUOTES
     const quotes = [
       { text: "Changed how I think about road networks.", attr: "-- Someone, probably" },
       { text: "I looked at this map for 45 minutes.", attr: "-- A city planner, allegedly" },
@@ -111,36 +184,156 @@
       { text: "I didn't know I needed this until I needed this.", attr: "-- A person, somewhere" },
       { text: "My GIS professor would be either very proud or very confused.", attr: "-- Jerrod Lessel, definitely" }
     ];
-    let current = 0;
+    let qCurrent = 0;
     const qtEl = document.getElementById('qt');
     const qaEl = document.getElementById('qa');
     const dotsEl = document.getElementById('qdots');
-    function buildDots() {
+    function buildQDots() {
       dotsEl.innerHTML = '';
       quotes.forEach((_, i) => {
         const d = document.createElement('div');
-        d.className = 'quote-dot' + (i === current ? ' active' : '');
-        d.onclick = () => goTo(i);
+        d.className = 'quote-dot' + (i === qCurrent ? ' active' : '');
+        d.onclick = () => goToQ(i);
         dotsEl.appendChild(d);
       });
     }
-    function goTo(idx) {
+    function goToQ(idx) {
       qtEl.classList.add('fade');
       qaEl.classList.add('fade');
       setTimeout(() => {
-        current = idx;
-        qtEl.textContent = '\u201C' + quotes[current].text + '\u201D';
-        qaEl.textContent = quotes[current].attr;
+        qCurrent = idx;
+        qtEl.textContent = '\u201C' + quotes[qCurrent].text + '\u201D';
+        qaEl.textContent = quotes[qCurrent].attr;
         qtEl.classList.remove('fade');
         qaEl.classList.remove('fade');
-        buildDots();
+        buildQDots();
       }, 500);
     }
     qtEl.textContent = '\u201C' + quotes[0].text + '\u201D';
     qaEl.textContent = quotes[0].attr;
-    buildDots();
-    setInterval(() => goTo((current + 1) % quotes.length), 6000);
+    buildQDots();
+    setInterval(() => goToQ((qCurrent + 1) % quotes.length), 6000);
 
+    // PUBLICATIONS
+    const pubs = [
+      {
+        title: "A global surveillance system for crop diseases",
+        meta: "Carvajal-Yepes, M., Cardwell, K., Nelson, A., Garrett, K.A., Giovani, B., Saunders, D.G., Kamoun, S., Legg, J.P., Verdier, V., Lessel, J. and Neher, R.A. -- Science, 364(6447), pp.1237-1239, 2019",
+        doi: "https://doi.org/10.1126/science.aaw1572",
+        doiLabel: "DOI: 10.1126/science.aaw1572",
+        firstAuthor: false,
+        type: "journal"
+      },
+      {
+        title: "Creating a basic customizable framework for crop identification at high spatial resolution using Landsat imagery",
+        meta: "Lessel, J. and Ceccato, P. -- Remote Sensing Letters, Vol. 37, 6097-6107, 2016",
+        doi: "",
+        doiLabel: "",
+        firstAuthor: true,
+        type: "journal"
+      },
+      {
+        title: "An agricultural drought severity index using quasi-climatological anomalies of remotely sensed data",
+        meta: "Lessel, J., Sweeney, A., and Ceccato, P. -- International Journal of Remote Sensing, Vol. 37, Iss. 4, p. 913-925, 2016",
+        doi: "",
+        doiLabel: "",
+        firstAuthor: true,
+        type: "journal"
+      },
+      {
+        title: "New thermobarometers for martian igneous rocks and some implications for secular cooling on Mars",
+        meta: "Lessel, J. and Putirka, K.D. -- American Mineralogist, Vol. 100, p. 2163-2171, 2015",
+        doi: "",
+        doiLabel: "",
+        firstAuthor: true,
+        type: "journal"
+      },
+      {
+        title: "Integrating remotely-sensed climate and environmental information into public health",
+        meta: "Ceccato, P., Connor, S., Dinku, T., Kruczkiewicz, A., Lessel, J., Sweeney, A., Thomson, M.C. -- Book chapter in: Integrating Scale in Remote Sensing and GIS. CRC Press, ISBN 9781482218268, 2017",
+        doi: "",
+        doiLabel: "",
+        firstAuthor: false,
+        type: "chapter"
+      },
+      {
+        title: "Use of remotely sensed climate and environmental information for air quality and public health applications",
+        meta: "Crosson, W., Akanda, A., Ceccato, P., Estes, S.M., Haynes, J.A., Saah, D., Buchholz T., et al. -- Book chapter in: Earth Science Satellite Applications, pp. 173-205. Springer, Cham, 2016",
+        doi: "",
+        doiLabel: "",
+        firstAuthor: false,
+        type: "chapter"
+      },
+      {
+        title: "Crop yield predictions -- high resolution statistical model for intra-season forecasts applied to wheat in India",
+        meta: "Cai, Y., Zhao, Y., Lessel, J., & Semret, N. -- Gro Intelligence, Inc., New York, NY, 2018",
+        doi: "",
+        doiLabel: "",
+        firstAuthor: false,
+        type: "report"
+      },
+      {
+        title: "Crop yield predictions -- high resolution statistical model for intra-season forecasts applied to corn in the US",
+        meta: "Cai, Y., Moore, A., Elhaddad, A., Lessel, J., Townsend, C., Solak, H., & Semret, N. -- Gro Intelligence, Inc., New York, NY, 2017",
+        doi: "",
+        doiLabel: "",
+        firstAuthor: false,
+        type: "report"
+      }
+    ];
+
+    let pCurrent = 0;
+    const pubEntry = document.getElementById('pub-entry');
+    const pubTitle = document.getElementById('pub-title');
+    const pubMeta = document.getElementById('pub-meta');
+    const pubDoi = document.getElementById('pub-doi');
+    const pubDots = document.getElementById('pub-dots');
+    const pubCountDisplay = document.getElementById('pub-count-display');
+
+    const typeLabels = { journal: 'Journal article', chapter: 'Book chapter', report: 'Technical report' };
+
+    function renderPub(idx) {
+      const p = pubs[idx];
+      // Build title with badges
+      pubTitle.innerHTML = p.title
+        + (p.firstAuthor ? '<span class="pub-first-author">First author</span>' : '')
+        + '<span class="pub-type">' + (typeLabels[p.type] || p.type) + '</span>';
+      pubMeta.textContent = p.meta;
+      if (p.doi) {
+        pubDoi.href = p.doi;
+        pubDoi.textContent = p.doiLabel;
+        pubDoi.style.display = 'inline-block';
+      } else {
+        pubDoi.style.display = 'none';
+      }
+      pubCountDisplay.textContent = (idx + 1) + ' of ' + pubs.length;
+    }
+
+    function buildPDots() {
+      pubDots.innerHTML = '';
+      pubs.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'pub-counter-dot' + (i === pCurrent ? ' active' : '');
+        d.onclick = () => goToPub(i);
+        pubDots.appendChild(d);
+      });
+    }
+
+    function goToPub(idx) {
+      pubEntry.classList.add('fade');
+      setTimeout(() => {
+        pCurrent = idx;
+        renderPub(pCurrent);
+        pubEntry.classList.remove('fade');
+        buildPDots();
+      }, 500);
+    }
+
+    renderPub(0);
+    buildPDots();
+    setInterval(() => goToPub((pCurrent + 1) % pubs.length), 7000);
+
+    // NAV TOGGLE
     document.querySelector('.nav-toggle').addEventListener('click', () => {
       document.querySelector('.nav-links').classList.toggle('open');
     });
