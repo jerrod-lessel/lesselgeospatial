@@ -49,8 +49,6 @@ export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-    // TEMPORARY SHUTDOWN -- remove once Upstash is fixed
-  return res.status(503).json({ error: "Transmission failed", articles: [] });
 
   try {
     // Check cache first
@@ -61,7 +59,7 @@ export default async function handler(req, res) {
 
     // No cache -- call Claude with web search
     const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 2000,
       system: SYSTEM_PROMPT,
       tools: [{ type: "web_search_20250305", name: "web_search" }],
