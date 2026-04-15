@@ -19,15 +19,16 @@ Rules:
 - Summaries should be 2-3 sentences. Informative but not dry.
 - If a sentence is boring, make it less boring. If it cannot be made less boring, at least make it accurate.
 - Never include citation tags, reference markers, index tags, or any markup in your summaries. Plain text only.
-- Return ONLY valid JSON, no markdown, no backticks, no preamble.`;
+- Return ONLY valid JSON, no markdown, no backticks, no preamble.
+- Be efficient -- do not over-search. Find 5 good headlines and stop.`;
 
-const USER_PROMPT = `Search the web for 5 recent and interesting geospatial news articles from the past week. Focus on: remote sensing, satellite imagery, disaster risk, urban resilience, climate monitoring, GIS tools, earth observation, or spatial data science. Prioritize research findings, new tools, and genuinely interesting developments over press releases or product announcements (unless the product announcement is actually interesting or newsworthy).
+const USER_PROMPT = `Do 1-2 focused web searches to find 5 recent geospatial news headlines from the past week. Focus on: remote sensing, satellite imagery, disaster risk, urban resilience, climate monitoring, GIS tools, or earth observation. Use only the headline and brief snippet for each -- do not read full articles. Stop searching once you have 5 good candidates.
 
 For each article return:
 - title: the article title
 - source: the publication or website name
 - url: the full URL
-- summary: 2-3 sentence summary in your voice -- witty, informative, slightly unhinged about maps. No em dashes.
+- summary: 2-3 sentence summary in your voice -- witty, informative, slightly unhinged about maps. No em dashes. Write from the headline and snippet only, do not fetch the full article.
 
 Return as a JSON object with this exact structure:
 {
@@ -50,6 +51,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  // Secret flush URL -- visit /api/geoganda?flush=YOUR_FLUSH_SECRET to clear cache
+  if (process.env.FLUSH_SECRET && req.query.flush === process.env.FLUSH_SECRET) {
+    await redis.del(CACHE_KEY);
+    return res.status(200).json({ message: "Cache cleared" });
+  }
+
   try {
     // Check cache first
     const cached = await redis.get(CACHE_KEY);
@@ -57,12 +64,12 @@ export default async function handler(req, res) {
       return res.status(200).json({ ...cached, fromCache: true });
     }
 
-    // No cache -- call Claude with web search
+    // No cache -- call Claude Haiku with web search, max 2 searches
     const message = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 2000,
+      max_tokens: 1000,
       system: SYSTEM_PROMPT,
-      tools: [{ type: "web_search_20250305", name: "web_search" }],
+      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 2 }],
       messages: [{ role: "user", content: USER_PROMPT }],
     });
 
