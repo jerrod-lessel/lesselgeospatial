@@ -49,6 +49,8 @@ export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
+    // TEMPORARY SHUTDOWN -- remove once Upstash is fixed
+  return res.status(503).json({ error: "Transmission failed", articles: [] });
 
   try {
     // Check cache first
