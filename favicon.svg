@@ -1,17 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-  <rect width="100" height="100" rx="18" fill="#141412"/>
-  <circle cx="30" cy="30" r="2" fill="#1D9E75" opacity="0.25"/>
-  <circle cx="55" cy="30" r="2" fill="#1D9E75" opacity="0.25"/>
-  <circle cx="80" cy="30" r="2" fill="#1D9E75" opacity="0.25"/>
-  <circle cx="30" cy="55" r="2" fill="#1D9E75" opacity="0.25"/>
-  <circle cx="55" cy="55" r="2" fill="#1D9E75" opacity="0.25"/>
-  <circle cx="80" cy="55" r="2" fill="#1D9E75" opacity="0.25"/>
-  <circle cx="30" cy="80" r="2" fill="#1D9E75" opacity="0.25"/>
-  <circle cx="55" cy="80" r="2" fill="#1D9E75" opacity="0.25"/>
-  <circle cx="80" cy="80" r="2" fill="#1D9E75" opacity="0.25"/>
-  <line x1="28" y1="18" x2="28" y2="72" stroke="#1D9E75" stroke-width="9" stroke-linecap="round"/>
-  <line x1="28" y1="72" x2="72" y2="72" stroke="#1D9E75" stroke-width="9" stroke-linecap="round"/>
-  <circle cx="28" cy="72" r="5.5" fill="#1D9E75"/>
-  <line x1="22" y1="42" x2="28" y2="42" stroke="#1D9E75" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-  <line x1="50" y1="72" x2="50" y2="78" stroke="#1D9E75" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Background: dark rounded square (for favicon.svg / apple-touch-icon) -->
+  <rect width="64" height="64" rx="12" fill="#080808"/>
+
+  <!-- Graticule arc — longitude arcs (vertical curves) -->
+  <!-- Faintest outer longitude -->
+  <path d="M48 10 A24 24 0 0 1 58 44" stroke="#2a2a2a" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+  <!-- Mid longitude -->
+  <path d="M40 7.5 A24 24 0 0 1 58 36" stroke="#383838" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+
+  <!-- Graticule arc — latitude arcs (horizontal curves) -->
+  <!-- Faintest outer latitude -->
+  <path d="M30 24 Q44 23 54 28" stroke="#2a2a2a" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+  <!-- Mid latitude -->
+  <path d="M30 16 Q44 15 54 20" stroke="#383838" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+
+  <!-- Primary bold arc — the hero outer quarter-circle -->
+  <path d="M30 6 A24 24 0 0 1 58 30" stroke="#e8e8e8" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Dashed axis lines extending from origin -->
+  <line x1="30" y1="6" x2="30" y2="30" stroke="#404040" stroke-width="1" stroke-dasharray="2.5 2"/>
+  <line x1="30" y1="30" x2="58" y2="30" stroke="#404040" stroke-width="1" stroke-dasharray="2.5 2"/>
+
+  <!-- Origin dot -->
+  <circle cx="30" cy="30" r="3.5" fill="#e8e8e8"/>
+
+  <!-- Axis terminus dots -->
+  <circle cx="30" cy="6" r="2" fill="#777"/>
+  <circle cx="58" cy="30" r="2" fill="#777"/>
 </svg>
