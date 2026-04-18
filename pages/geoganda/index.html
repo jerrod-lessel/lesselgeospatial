@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Project Geoganda | LGeo</title>
   <meta name="description" content="A daily geospatial news briefing with an agenda. Finding the ground truth in geospatial news." />
@@ -212,7 +209,7 @@
 </head>
 <body>
   <nav class="nav">
-    <a href="../../" class="logo"><span class="green">L</span>essel<span class="green">Geo</span>spatial</a>
+    <a href="../../" class="logo"><img src="/apple-touch-icon.png" alt="LGeo" class="logo-icon"><span class="green">L</span>essel<span class="green">Geo</span>spatial</a>
     <ul class="nav-links">
       <li><a href="../../#projects">Projects</a></li>
       <li><a href="../../#about">About</a></li>
@@ -299,7 +296,6 @@
 
     function escHtml(str) {
       return String(str)
-        .replace(/]*>|<\/antml:cite>/g, '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
