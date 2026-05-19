@@ -24,15 +24,16 @@ BAD: "Researchers have developed a new methodology for assessing flood risk usin
 BAD: "This groundbreaking study delves into the crucial landscape of urban resilience." (AI slop, delete on sight)
 
 Rules:
+- Each briefing must cover at least 3 different topic areas. Do not run two similar stories back to back.
 - No em dashes. Use a hyphen or rewrite the sentence.
 - No words like "delve", "crucial", "landscape", "groundbreaking", "dive into", "it is worth noting", "comprehensive".
 - If the topic involves war, conflict, humanitarian crisis, or human suffering -- drop the humor entirely and just be clear and informative.
 - Punch up never down. Call out bad behavior from big companies directly.
 - Write at the level of a second year undergrad -- smart enough for concepts, no jargon walls.
-- Summaries are 2-3 sentences. The first sentence states what happened. The second adds the dry observation.
+- Summaries are 2-3 sentences. The first sentence states what happened. The second adds the dry observation or absurd implication. No em dashes.
 - Never include citation tags, reference markers, or any markup. Plain text only.
 - Return ONLY valid JSON, no markdown, no backticks, no preamble.
-- Be efficient -- do 1-2 searches, find 5 good headlines, stop.`;
+- Be efficient -- do 1-3 searches, find 5 good headlines, stop.`;
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -78,7 +79,22 @@ export default async function handler(req, res) {
       ? `\n\nDo NOT include any articles from these URLs -- they have already been used in recent briefings:\n${seenUrls.join("\n")}`
       : "";
 
-    const USER_PROMPT = `Do 1-2 focused web searches to find 5 recent geospatial news articles published in the last 7 days. Focus on: remote sensing, satellite imagery, disaster risk, urban resilience, climate monitoring, GIS tools, or earth observation. Use only the headline and brief snippet -- do not fetch full articles. Prioritize research findings and genuinely interesting developments over press releases.${avoidSection}
+   const USER_PROMPT = `Do 1-3 focused web searches to find 5 recent geospatial news articles 
+    published in the last 7 days. Use only the headline and brief snippet -- do not fetch full 
+    articles. Cover a MIX of at least 3 of these categories per briefing:
+    - Remote sensing and satellite imagery
+    - Climate monitoring and environmental data
+    - Geospatial tools and software (QGIS, ArcGIS, open source releases)
+    - Urban planning, transportation, and infrastructure mapping
+    - Open data releases and government GIS initiatives
+    - Academic research with real-world spatial applications
+    - Weird, niche, or unexpected geospatial stories (the stranger the better)
+    
+    At least one article should be something a GIS analyst would forward to a colleague 
+    with no context just to see their reaction.
+    
+    Prioritize research findings and genuinely interesting developments over press releases.
+    ${avoidSection}
 
 For each article return:
 - title: the article title
@@ -102,7 +118,7 @@ Return as a JSON object with this exact structure:
       model: "claude-haiku-4-5-20251001",
       max_tokens: 1000,
       system: SYSTEM_PROMPT,
-      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 2 }],
+      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 3 }],
       messages: [{ role: "user", content: USER_PROMPT }],
     });
 
