@@ -164,16 +164,18 @@ body {
   animation: heroZoom 18s ease-out forwards;
   -webkit-mask-image: linear-gradient(to bottom,
     transparent 0%,
-    transparent 35%,
-    rgba(0,0,0,0.4) 55%,
-    rgba(0,0,0,0.85) 75%,
+    transparent 25%,
+    rgba(0,0,0,0.15) 40%,
+    rgba(0,0,0,0.5) 58%,
+    rgba(0,0,0,0.85) 78%,
     black 100%
   );
   mask-image: linear-gradient(to bottom,
     transparent 0%,
-    transparent 35%,
-    rgba(0,0,0,0.4) 55%,
-    rgba(0,0,0,0.85) 75%,
+    transparent 25%,
+    rgba(0,0,0,0.15) 40%,
+    rgba(0,0,0,0.5) 58%,
+    rgba(0,0,0,0.85) 78%,
     black 100%
   );
 }
