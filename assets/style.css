@@ -212,6 +212,18 @@ body {
   );
 }
 
+.hero-mid-tint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+    transparent 20%,
+    rgba(20,20,18,0.25) 45%,
+    rgba(20,20,18,0.15) 65%,
+    transparent 85%
+  );
+  pointer-events: none;
+}
+
 /*
   Layer 3 — bottom fade into page bg
 */
