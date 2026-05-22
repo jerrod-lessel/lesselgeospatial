@@ -157,7 +157,7 @@ body {
 .hero-map {
   position: absolute;
   inset: 0;
-  background-image: url('../img/hero-goleta.png');
+  background-image: url('/assets/img/hero-goleta.png');
   background-size: cover;
   background-position: center 50%;
   transform: scale(1.03);
