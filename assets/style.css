@@ -32,37 +32,35 @@
 
 html { scroll-behavior: smooth; }
 
+/*
+  body no longer has max-width — that was clipping the full-bleed hero.
+  All interior sections use their own max-width + auto margins instead.
+*/
 body {
   font-family: var(--font-mono);
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 1rem;
 }
 
 .green { color: var(--green); }
 
 /* ── NAV ── */
-/* nav breaks out of the body max-width to go full bleed */
 .nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 1rem;
+  padding: 1.5rem calc((100vw - 900px) / 2 + 1rem);
   border-bottom: 0.5px solid rgba(255,255,255,0.08);
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 100;
   background: var(--nav-bg);
 }
 
-/* inner wrapper keeps nav content at 900px max */
-.nav > * { max-width: 900px; }
-.nav { padding-left: max(1rem, calc((100vw - 900px) / 2 + 1rem)); padding-right: max(1rem, calc((100vw - 900px) / 2 + 1rem)); }
+@media (max-width: 940px) {
+  .nav { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
 
 .logo {
   font-weight: 500;
@@ -125,8 +123,7 @@ body {
     display: none;
     flex-direction: column;
     position: absolute;
-    top: 100%;
-    right: 0;
+    top: 100%; right: 0;
     background: #141412;
     border: 0.5px solid rgba(255,255,255,0.1);
     padding: 1rem 1.5rem;
@@ -137,28 +134,25 @@ body {
 }
 
 /* ── HERO ── */
-/* hero also breaks out of body max-width */
+/*
+  Full viewport width — no max-width, no margin constraints.
+  The body no longer restricts it.
+*/
 .hero {
   position: relative;
   min-height: 100vh;
+  width: 100%;
   background: var(--hero-bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
-  /* offset for fixed nav height */
   padding-top: 80px;
-  /* break out of body padding */
-  margin-left: -1rem;
-  margin-right: -1rem;
-  width: calc(100% + 2rem);
-  max-width: 100vw;
 }
 
 /*
   Layer 1 — map image
   Transparent at top, opaque at bottom.
-  The Goleta coastline hazard map.
 */
 .hero-map {
   position: absolute;
@@ -191,9 +185,7 @@ body {
 
 /*
   Layer 2 — grid
-  Opaque at top, transparent at bottom.
-  Identical pattern to the original .hero-grid,
-  just masked to fade out downward.
+  Opaque at top, fades out downward.
 */
 .hero-grid {
   position: absolute;
@@ -219,28 +211,24 @@ body {
 }
 
 /*
-  Layer 3 — bottom fade
-  Blends the dark hero smoothly into the page background
-  so the credentials bar below has no hard cut.
+  Layer 3 — bottom fade into page bg
 */
 .hero-bottom-fade {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 0; left: 0; right: 0;
   height: 180px;
   background: linear-gradient(to bottom, transparent, var(--bg));
   pointer-events: none;
 }
 
-/* hero text content, constrained back to 900px */
+/* hero text, constrained to 900px and centered */
 .hero-content {
   position: relative;
   z-index: 2;
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
-  padding: 5rem 1rem 10rem;
+  padding: 5rem 1.5rem 10rem;
 }
 
 .eyebrow {
@@ -326,7 +314,6 @@ body {
 .btn-ghost:hover { border-color: #3dffa0; color: #3dffa0; }
 
 /* ── CREDENTIALS ── */
-/* floats up slightly to overlap hero bottom edge */
 .credentials {
   display: flex;
   gap: 2rem;
@@ -337,6 +324,10 @@ body {
   position: relative;
   z-index: 3;
   margin-top: -2rem;
+  /* constrained to 900px like the rest of the page content */
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .cred { display: flex; flex-direction: column; gap: 4px; }
@@ -351,7 +342,14 @@ body {
 .cred-value { font-size: 13px; color: var(--text); }
 
 /* ── SECTIONS ── */
-.section { padding: 4rem 0; }
+/* all page content below the hero is constrained here */
+.section {
+  padding: 4rem 0;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
 
 .section-label {
   font-size: 10px;
@@ -382,7 +380,6 @@ body {
 
 .project-card:hover { border-color: var(--green); }
 
-/* screenshot image sits above the card body */
 .project-card-img {
   width: 100%;
   display: block;
@@ -399,24 +396,34 @@ body {
 }
 
 /*
-  Remnant Biome special crop:
-  scale up so the circular map viewport fills the frame,
-  cutting out the dark empty space on the sides.
+  Remnant Biome special treatment.
+  Wrap the img in .project-card-img-wrap so the scale
+  is clipped independently from the card body below it.
+  This prevents the scaled image from pushing the card body down.
 */
-.project-card-img.remnant {
+.project-card-img-wrap {
+  overflow: hidden;
+  /* explicit height so the wrap doesn't collapse */
   aspect-ratio: 16 / 7;
-  object-position: center 38%;
-  transform-origin: center 38%;
-  transform: scale(1.25);
 }
 
-.project-card:hover .project-card-img.remnant {
+.project-card-img-wrap .project-card-img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: unset;
+  object-position: center 38%;
+  transform: scale(1.25);
+  transform-origin: center 38%;
+}
+
+.project-card:hover .project-card-img-wrap .project-card-img {
   transform: scale(1.28);
+  filter: brightness(0.95) saturate(1.15);
 }
 
 .project-card-body { padding: 2rem; }
 
-/* header row: tag on left, status badge + link on right */
+/* header row inside card body: tag left, status + link right */
 .project-card-header {
   display: flex;
   align-items: flex-start;
@@ -439,7 +446,6 @@ body {
   flex-shrink: 0;
 }
 
-/* status badges */
 .card-status {
   font-size: 0.68rem;
   letter-spacing: 0.12em;
@@ -476,6 +482,7 @@ body {
   max-width: 580px;
 }
 
+/* project link now lives inside .card-meta-right, not absolute */
 .project-link {
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -500,7 +507,7 @@ body {
 
 /* ── QUOTES ── */
 .quotes {
-  padding: 3rem 0;
+  padding: 3rem 1.5rem;
   border-top: 0.5px solid var(--border);
   border-bottom: 0.5px solid var(--border);
   text-align: center;
@@ -510,6 +517,8 @@ body {
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .quote-text {
@@ -550,11 +559,13 @@ body {
 
 /* ── ABOUT ── */
 .about {
-  padding: 4rem 0;
+  padding: 4rem 1.5rem;
   border-top: 0.5px solid var(--border);
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 3rem;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 @media (max-width: 600px) {
@@ -603,13 +614,15 @@ body {
 
 /* ── FOOTER ── */
 .footer {
-  padding: 2rem 0;
+  padding: 2rem 1.5rem;
   border-top: 0.5px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .footer-copy { font-size: 11px; color: var(--text-muted); font-style: italic; }
