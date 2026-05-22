@@ -14,6 +14,8 @@
   --bg-secondary: #f7f6f3;
   --font-mono: 'DM Mono', monospace;
   --font-serif: 'Fraunces', serif;
+  --nav-bg: #141412;
+  --hero-bg: #141412;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,20 +44,30 @@ body {
 
 .green { color: var(--green); }
 
-/* NAV */
+/* ── NAV ── */
+/* nav breaks out of the body max-width to go full bleed */
 .nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 0;
-  border-bottom: 0.5px solid var(--border);
-  position: relative;
+  padding: 1.5rem 1rem;
+  border-bottom: 0.5px solid rgba(255,255,255,0.08);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--nav-bg);
 }
+
+/* inner wrapper keeps nav content at 900px max */
+.nav > * { max-width: 900px; }
+.nav { padding-left: max(1rem, calc((100vw - 900px) / 2 + 1rem)); padding-right: max(1rem, calc((100vw - 900px) / 2 + 1rem)); }
 
 .logo {
   font-weight: 500;
   text-transform: uppercase;
-  color: var(--text);
+  color: #e8e6e0;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -78,14 +90,8 @@ body {
   line-height: 1;
 }
 
-.logo-line1 {
-  font-size: 32px;
-}
-
-.logo-line2 {
-  font-size: 16px;
-  color: var(--text-mid);
-}
+.logo-line1 { font-size: 32px; }
+.logo-line2 { font-size: 16px; color: rgba(232,230,224,0.55); }
 
 .nav-links {
   display: flex;
@@ -96,12 +102,13 @@ body {
 .nav-links a {
   font-size: 12px;
   letter-spacing: 0.08em;
-  color: var(--text-mid);
+  color: rgba(232,230,224,0.6);
   text-decoration: none;
   text-transform: uppercase;
+  transition: color 0.2s;
 }
 
-.nav-links a:hover { color: var(--green); }
+.nav-links a:hover { color: #3dffa0; }
 
 .nav-toggle {
   display: none;
@@ -109,7 +116,7 @@ body {
   border: none;
   font-size: 18px;
   cursor: pointer;
-  color: var(--text);
+  color: #e8e6e0;
 }
 
 @media (max-width: 600px) {
@@ -120,8 +127,8 @@ body {
     position: absolute;
     top: 100%;
     right: 0;
-    background: var(--bg);
-    border: 0.5px solid var(--border);
+    background: #141412;
+    border: 0.5px solid rgba(255,255,255,0.1);
     padding: 1rem 1.5rem;
     gap: 1rem;
     z-index: 100;
@@ -129,29 +136,118 @@ body {
   .nav-links.open { display: flex; }
 }
 
-/* HERO */
+/* ── HERO ── */
+/* hero also breaks out of body max-width */
 .hero {
-  padding: 5rem 0 4rem;
   position: relative;
+  min-height: 100vh;
+  background: var(--hero-bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   overflow: hidden;
+  /* offset for fixed nav height */
+  padding-top: 80px;
+  /* break out of body padding */
+  margin-left: -1rem;
+  margin-right: -1rem;
+  width: calc(100% + 2rem);
+  max-width: 100vw;
 }
 
+/*
+  Layer 1 — map image
+  Transparent at top, opaque at bottom.
+  The Goleta coastline hazard map.
+*/
+.hero-map {
+  position: absolute;
+  inset: 0;
+  background-image: url('assets/img/hero-goleta.png');
+  background-size: cover;
+  background-position: center 50%;
+  transform: scale(1.03);
+  animation: heroZoom 18s ease-out forwards;
+  -webkit-mask-image: linear-gradient(to bottom,
+    transparent 0%,
+    transparent 20%,
+    rgba(0,0,0,0.4) 45%,
+    rgba(0,0,0,0.85) 70%,
+    black 100%
+  );
+  mask-image: linear-gradient(to bottom,
+    transparent 0%,
+    transparent 20%,
+    rgba(0,0,0,0.4) 45%,
+    rgba(0,0,0,0.85) 70%,
+    black 100%
+  );
+}
+
+@keyframes heroZoom {
+  from { transform: scale(1.03); }
+  to   { transform: scale(1.0); }
+}
+
+/*
+  Layer 2 — grid
+  Opaque at top, transparent at bottom.
+  Identical pattern to the original .hero-grid,
+  just masked to fade out downward.
+*/
 .hero-grid {
   position: absolute;
   inset: 0;
-  opacity: 0.04;
+  opacity: 0.06;
   background-image:
-    linear-gradient(var(--text) 1px, transparent 1px),
-    linear-gradient(90deg, var(--text) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom,
+    black 0%,
+    black 25%,
+    rgba(0,0,0,0.5) 55%,
+    transparent 80%
+  );
+  mask-image: linear-gradient(to bottom,
+    black 0%,
+    black 25%,
+    rgba(0,0,0,0.5) 55%,
+    transparent 80%
+  );
+}
+
+/*
+  Layer 3 — bottom fade
+  Blends the dark hero smoothly into the page background
+  so the credentials bar below has no hard cut.
+*/
+.hero-bottom-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  pointer-events: none;
+}
+
+/* hero text content, constrained back to 900px */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 5rem 1rem 10rem;
 }
 
 .eyebrow {
   font-size: 11px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--green);
+  color: #3dffa0;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -163,7 +259,7 @@ body {
   display: inline-block;
   width: 24px;
   height: 1px;
-  background: var(--green);
+  background: currentColor;
 }
 
 .headline {
@@ -171,16 +267,16 @@ body {
   font-size: clamp(2.4rem, 5vw, 3.8rem);
   font-weight: 300;
   line-height: 1.1;
-  color: var(--text);
+  color: #f0ede6;
   margin-bottom: 1rem;
   max-width: 620px;
 }
 
-.headline em { font-style: italic; color: var(--green); }
+.headline em { font-style: italic; color: #3dffa0; }
 
 .subtagline {
   font-size: 13px;
-  color: var(--text-muted);
+  color: rgba(240,237,230,0.5);
   font-style: italic;
   margin-bottom: 1.5rem;
 }
@@ -188,7 +284,7 @@ body {
 .sub {
   font-size: 14px;
   line-height: 1.8;
-  color: var(--text-mid);
+  color: rgba(240,237,230,0.6);
   max-width: 500px;
   margin-bottom: 2.5rem;
 }
@@ -214,8 +310,8 @@ body {
 
 .btn-ghost {
   background: transparent;
-  color: var(--text-mid);
-  border: 0.5px solid var(--border-mid);
+  color: rgba(240,237,230,0.65);
+  border: 0.5px solid rgba(240,237,230,0.25);
   padding: 0.75rem 1.5rem;
   font-family: var(--font-mono);
   font-size: 12px;
@@ -227,16 +323,20 @@ body {
   transition: border-color 0.2s, color 0.2s;
 }
 
-.btn-ghost:hover { border-color: var(--green); color: var(--green); }
+.btn-ghost:hover { border-color: #3dffa0; color: #3dffa0; }
 
-/* CREDENTIALS */
+/* ── CREDENTIALS ── */
+/* floats up slightly to overlap hero bottom edge */
 .credentials {
   display: flex;
   gap: 2rem;
-  padding: 2rem 0;
-  border-top: 0.5px solid var(--border);
-  border-bottom: 0.5px solid var(--border);
+  padding: 1.75rem 2rem;
+  border: 0.5px solid var(--border);
   flex-wrap: wrap;
+  background: var(--bg);
+  position: relative;
+  z-index: 3;
+  margin-top: -2rem;
 }
 
 .cred { display: flex; flex-direction: column; gap: 4px; }
@@ -250,7 +350,7 @@ body {
 
 .cred-value { font-size: 13px; color: var(--text); }
 
-/* SECTIONS */
+/* ── SECTIONS ── */
 .section { padding: 4rem 0; }
 
 .section-label {
@@ -271,23 +371,93 @@ body {
   background: var(--border);
 }
 
-/* PROJECT CARDS */
+/* ── PROJECT CARDS ── */
 .project-card {
   border: 0.5px solid var(--border);
-  padding: 2rem;
   margin-bottom: 1rem;
   position: relative;
   transition: border-color 0.2s;
+  overflow: hidden;
 }
 
 .project-card:hover { border-color: var(--green); }
+
+/* screenshot image sits above the card body */
+.project-card-img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16 / 6;
+  object-fit: cover;
+  object-position: center 25%;
+  filter: brightness(0.82) saturate(1.05);
+  transition: filter 0.4s, transform 0.5s;
+}
+
+.project-card:hover .project-card-img {
+  filter: brightness(0.95) saturate(1.15);
+  transform: scale(1.02);
+}
+
+/*
+  Remnant Biome special crop:
+  scale up so the circular map viewport fills the frame,
+  cutting out the dark empty space on the sides.
+*/
+.project-card-img.remnant {
+  aspect-ratio: 16 / 7;
+  object-position: center 38%;
+  transform-origin: center 38%;
+  transform: scale(1.25);
+}
+
+.project-card:hover .project-card-img.remnant {
+  transform: scale(1.28);
+}
+
+.project-card-body { padding: 2rem; }
+
+/* header row: tag on left, status badge + link on right */
+.project-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
 
 .project-tag {
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--green);
-  margin-bottom: 0.75rem;
+}
+
+.card-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* status badges */
+.card-status {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  white-space: nowrap;
+}
+
+.status-live {
+  background: rgba(29,158,117,0.1);
+  color: var(--green);
+  border: 0.5px solid rgba(29,158,117,0.3);
+}
+
+.status-build {
+  background: rgba(255,180,50,0.08);
+  color: #c8903a;
+  border: 0.5px solid rgba(255,180,50,0.25);
 }
 
 .project-title {
@@ -307,14 +477,12 @@ body {
 }
 
 .project-link {
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--green);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .project-link:hover { text-decoration: underline; }
@@ -330,7 +498,7 @@ body {
   color: var(--text-mid);
 }
 
-/* QUOTES */
+/* ── QUOTES ── */
 .quotes {
   padding: 3rem 0;
   border-top: 0.5px solid var(--border);
@@ -380,7 +548,7 @@ body {
 
 .quote-dot.active { background: var(--green); }
 
-/* ABOUT */
+/* ── ABOUT ── */
 .about {
   padding: 4rem 0;
   border-top: 0.5px solid var(--border);
@@ -433,7 +601,7 @@ body {
 
 .pub-meta { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
 
-/* FOOTER */
+/* ── FOOTER ── */
 .footer {
   padding: 2rem 0;
   border-top: 0.5px solid var(--border);
