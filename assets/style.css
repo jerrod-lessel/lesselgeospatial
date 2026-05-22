@@ -164,17 +164,17 @@ body {
   animation: heroZoom 18s ease-out forwards;
   -webkit-mask-image: linear-gradient(to bottom,
     transparent 0%,
-    transparent 10%,
-    rgba(0,0,0,0.4) 35%,
-    rgba(0,0,0,0.85) 55%,
-    black 75%
+    transparent 35%,
+    rgba(0,0,0,0.4) 55%,
+    rgba(0,0,0,0.85) 75%,
+    black 100%
   );
   mask-image: linear-gradient(to bottom,
     transparent 0%,
-    transparent 10%,
-    rgba(0,0,0,0.4) 35%,
-    rgba(0,0,0,0.85) 55%,
-    black 75%
+    transparent 35%,
+    rgba(0,0,0,0.4) 55%,
+    rgba(0,0,0,0.85) 75%,
+    black 100%
   );
 }
 
@@ -198,15 +198,15 @@ body {
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom,
     black 0%,
-    black 15%,
-    rgba(0,0,0,0.5) 40%,
-    transparent 62%
+    black 35%,
+    rgba(0,0,0,0.5) 60%,
+    transparent 80%
   );
   mask-image: linear-gradient(to bottom,
     black 0%,
-    black 15%,
-    rgba(0,0,0,0.5) 40%,
-    transparent 62%
+    black 35%,
+    rgba(0,0,0,0.5) 60%,
+    transparent 80%
   );
 }
 
