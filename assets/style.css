@@ -159,7 +159,7 @@ body {
   inset: 0;
   background-image: url('/assets/img/hero-goleta.png');
   background-size: cover;
-  background-position: center 50%;
+  background-position: 40% 50%;
   transform: scale(1.03);
   animation: heroZoom 18s ease-out forwards;
   -webkit-mask-image: linear-gradient(to bottom,
@@ -192,7 +192,7 @@ body {
 .hero-grid {
   position: absolute;
   inset: 0;
-  opacity: 0.06;
+  opacity: 0.04;
   background-image:
     linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px);
@@ -218,7 +218,7 @@ body {
 .hero-bottom-fade {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 180px;
+  height: 250px;
   background: linear-gradient(to bottom, transparent, var(--bg));
   pointer-events: none;
 }
@@ -230,7 +230,7 @@ body {
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
-  padding: 5rem 1.5rem 10rem;
+  padding: 3rem 1.5rem 12rem;
 }
 
 .eyebrow {
@@ -413,9 +413,9 @@ body {
   width: 100%;
   height: 100%;
   aspect-ratio: unset;
-  object-position: 60% 55%;
+  object-position: center 38%;
   transform: scale(1.25);
-  transform-origin: 60% 55%;
+  transform-origin: center 38%;
 }
 
 .project-card:hover .project-card-img-wrap .project-card-img {
