@@ -10,72 +10,29 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/style.css" />
   <style>
-    .pub-rotator {
-      position: relative;
-      min-height: 120px;
-    }
-    .pub-entry {
-      transition: opacity 0.5s ease;
-    }
+    .pub-rotator { position: relative; min-height: 120px; }
+    .pub-entry { transition: opacity 0.5s ease; }
     .pub-entry.fade { opacity: 0; }
-    .pub-counter {
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-muted, #888);
-      margin-top: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .pub-counter-dots {
-      display: flex;
-      gap: 5px;
-    }
-    .pub-counter-dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--border-mid, rgba(0,0,0,0.2));
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+    .pub-counter { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted, #888); margin-top: 0.75rem; display: flex; align-items: center; gap: 12px; }
+    .pub-counter-dots { display: flex; gap: 5px; }
+    .pub-counter-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border-mid, rgba(0,0,0,0.2)); cursor: pointer; transition: background 0.2s; }
     .pub-counter-dot.active { background: #1D9E75; }
-    .pub-first-author {
-      display: inline-block;
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      background: #e1f5ee;
-      color: #0F6E56;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-    .pub-type {
-      display: inline-block;
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      background: var(--bg-secondary, #f7f6f3);
-      color: var(--text-muted, #888);
-      margin-left: 6px;
-      vertical-align: middle;
-    }
-    .pub-doi {
-      display: inline-block;
-      font-size: 11px;
-      color: #1D9E75;
-      text-decoration: none;
-      margin-top: 6px;
-    }
+    .pub-first-author { display: inline-block; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; background: #e1f5ee; color: #0F6E56; margin-left: 8px; vertical-align: middle; }
+    .pub-type { display: inline-block; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; background: var(--bg-secondary, #f7f6f3); color: var(--text-muted, #888); margin-left: 6px; vertical-align: middle; }
+    .pub-doi { display: inline-block; font-size: 11px; color: #1D9E75; text-decoration: none; margin-top: 6px; }
     .pub-doi:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
+
   <nav class="nav">
-    <a href="/" class="logo"><img src="/apple-touch-icon.png" alt="LGeo" class="logo-icon"><span class="logo-text"><span class="logo-line1"><span class="green">L</span>essel</span><span class="logo-line2"><span class="green">Geo</span>spatial</span></span>
+    <a href="/" class="logo">
+      <img src="/apple-touch-icon.png" alt="LGeo" class="logo-icon">
+      <span class="logo-text">
+        <span class="logo-line1"><span class="green">L</span>essel</span>
+        <span class="logo-line2"><span class="green">Geo</span>spatial</span>
+      </span>
+    </a>
     <ul class="nav-links">
       <li><a href="#projects">Projects</a></li>
       <li><a href="#about">About</a></li>
@@ -87,14 +44,22 @@
   </nav>
 
   <section class="hero">
+    <!-- Layer 1: map image, transparent top fading to opaque bottom -->
+    <div class="hero-map"></div>
+    <!-- Layer 2: grid, opaque top fading to transparent bottom -->
     <div class="hero-grid"></div>
-    <div class="eyebrow">Geospatial research &amp; tools</div>
-    <h1 class="headline">Someone has to<br>map <em>this mess.</em></h1>
-    <p class="subtagline">Turns out everything has coordinates.</p>
-    <p class="sub">Building open-source tools and research at the intersection of remote sensing, disaster risk, and urban resilience.</p>
-    <div class="cta-row">
-      <a class="btn-primary" href="#projects">View projects</a>
-      <a class="btn-ghost" href="#about">About Jerrod</a>
+    <!-- Layer 3: smooth blend into page background at very bottom -->
+    <div class="hero-bottom-fade"></div>
+
+    <div class="hero-content">
+      <div class="eyebrow">Geospatial research &amp; tools</div>
+      <h1 class="headline">Someone has to<br>map <em>this mess.</em></h1>
+      <p class="subtagline">Turns out everything has coordinates.</p>
+      <p class="sub">Building open-source tools and research at the intersection of remote sensing, disaster risk, and urban resilience.</p>
+      <div class="cta-row">
+        <a class="btn-primary" href="#projects">View projects</a>
+        <a class="btn-ghost" href="#about">About Jerrod</a>
+      </div>
     </div>
   </section>
 
@@ -108,61 +73,97 @@
   <section class="section" id="projects">
     <div class="section-label">Projects</div>
 
+    <!-- Geospatial Manifold -->
     <div class="project-card">
-      <a class="project-link" href="https://jerrod-lessel.github.io/geospatial_manifold/#" target="_blank">View project &rarr;</a>
-      <div class="project-tag">Risk analysis tool</div>
-      <h2 class="project-title">Geospatial Manifold</h2>
-      <p class="project-desc">A pre-disaster urban resilience auditing platform for city planners. Analyzes road network vulnerability and identifies critical failure points before disaster strikes, not after.</p>
-      <div class="project-meta">
-        <span class="tag">Leaflet</span>
-        <span class="tag">CAL FIRE</span>
-        <span class="tag">Python</span>
-        <span class="tag">Urban Planning</span>
-        <span class="tag">Disaster Risk</span>
+      <img class="project-card-img" src="assets/img/card-manifold.png" alt="Geospatial Manifold — seismic hazard map of San Luis Obispo" style="object-position: center 30%;">
+      <div class="project-card-body">
+        <div class="project-card-header">
+          <div class="project-tag">Risk analysis tool</div>
+          <div class="card-meta-right">
+            <span class="card-status status-live">Live</span>
+            <a class="project-link" href="https://jerrod-lessel.github.io/geospatial_manifold/#" target="_blank">View project &rarr;</a>
+          </div>
+        </div>
+        <h2 class="project-title">Geospatial Manifold</h2>
+        <p class="project-desc">A pre-disaster urban resilience auditing platform for city planners. Analyzes road network vulnerability and identifies critical failure points before disaster strikes, not after.</p>
+        <div class="project-meta">
+          <span class="tag">Leaflet</span>
+          <span class="tag">CAL FIRE</span>
+          <span class="tag">Python</span>
+          <span class="tag">Urban Planning</span>
+          <span class="tag">Disaster Risk</span>
+        </div>
       </div>
     </div>
 
+    <!-- Spectral Glimpse -->
     <div class="project-card">
-      <a class="project-link" href="https://spectral-glimpse.pages.dev/" target="_blank">View project &rarr;</a>
-      <div class="project-tag">Spectral indices analysis tool</div>
-      <h2 class="project-title">Spectral Glimpse</h2>
-      <p class="project-desc">Because sometimes you don't need the whole spectrum, just a peek. An on-demand spectral index platform for California. Click any point on the map to sample six satellite-derived indices with two years of 8-day history. Powered by NASA VIIRS data, updated automatically every 8 days.</p>
-      <div class="project-meta">
-        <span class="tag">NASA VIIRS</span>
-        <span class="tag">Cloud-Optimized GeoTIFF</span>
-        <span class="tag">Cloud Run</span>
-        <span class="tag">Remote Sensing</span>
-        <span class="tag">Cloudflare</span>
+      <img class="project-card-img" src="assets/img/card-spectral.png" alt="Spectral Glimpse — NDVI panel over Santa Barbara" style="object-position: center 35%;">
+      <div class="project-card-body">
+        <div class="project-card-header">
+          <div class="project-tag">Spectral indices analysis tool</div>
+          <div class="card-meta-right">
+            <span class="card-status status-live">Live</span>
+            <a class="project-link" href="https://spectral-glimpse.pages.dev/" target="_blank">View project &rarr;</a>
+          </div>
+        </div>
+        <h2 class="project-title">Spectral Glimpse</h2>
+        <p class="project-desc">Because sometimes you don't need the whole spectrum, just a peek. An on-demand spectral index platform for California. Click any point on the map to sample six satellite-derived indices with two years of 8-day history. Powered by NASA VIIRS data, updated automatically every 8 days.</p>
+        <div class="project-meta">
+          <span class="tag">NASA VIIRS</span>
+          <span class="tag">Cloud-Optimized GeoTIFF</span>
+          <span class="tag">Cloud Run</span>
+          <span class="tag">Remote Sensing</span>
+          <span class="tag">Cloudflare</span>
+        </div>
       </div>
     </div>
 
+    <!-- Remnant Biome -->
     <div class="project-card">
-      <a class="project-link" href="https://remnant-biome.pages.dev/" target="_blank">View project &rarr;</a>
-      <div class="project-tag">Agricultural viability tool</div>
-      <h2 class="project-title">Remnant Biome</h2>
-      <p class="project-desc">Mapping how California's agricultural viability zones are shifting under climate change, from 1980 to 2100. Explore seven derived climate metrics across four crops and three pests, computed from LOCA2-Hybrid downscaled climate projections under multiple emissions scenarios. A static, no-backend tool built on precomputed data underpinning the Fifth California Climate Assessment.</p>
-      <div class="project-meta">
-        <span class="tag">LOCA2-Hybrid</span>
-        <span class="tag">CMIP6</span>
-        <span class="tag">MapLibre GL JS</span>
-        <span class="tag">Climate Change</span>
-        <span class="tag">California Agriculture</span>
+      <img class="project-card-img remnant" src="assets/img/card-remnant.png" alt="Remnant Biome — wine grape growing degree days viability map">
+      <div class="project-card-body">
+        <div class="project-card-header">
+          <div class="project-tag">Agricultural viability tool</div>
+          <div class="card-meta-right">
+            <span class="card-status status-live">Live</span>
+            <a class="project-link" href="https://remnant-biome.pages.dev/" target="_blank">View project &rarr;</a>
+          </div>
+        </div>
+        <h2 class="project-title">Remnant Biome</h2>
+        <p class="project-desc">Mapping how California's agricultural viability zones are shifting under climate change, from 1980 to 2100. Explore seven derived climate metrics across four crops and three pests, computed from LOCA2-Hybrid downscaled climate projections under multiple emissions scenarios. A static, no-backend tool built on precomputed data underpinning the Fifth California Climate Assessment.</p>
+        <div class="project-meta">
+          <span class="tag">LOCA2-Hybrid</span>
+          <span class="tag">CMIP6</span>
+          <span class="tag">MapLibre GL JS</span>
+          <span class="tag">Climate Change</span>
+          <span class="tag">California Agriculture</span>
+        </div>
       </div>
     </div>
-    
+
+    <!-- Project Geoganda -->
     <div class="project-card">
-      <a class="project-link" href="pages/geoganda/">View project &rarr;</a>
-      <div class="project-tag">Daily briefing</div>
-      <h2 class="project-title">Project Geoganda</h2>
-      <p class="project-desc">A daily geospatial news briefing with an agenda, to find the ground truth in geospatial news. Curated by AI, filtered by taste, delivered with a slight edge.</p>
-      <div class="project-meta">
-        <span class="tag">Daily</span>
-        <span class="tag">Remote Sensing</span>
-        <span class="tag">Disaster Risk</span>
-        <span class="tag">Urban Planning</span>
-        <span class="tag">Climate</span>
+      <div class="project-card-body">
+        <div class="project-card-header">
+          <div class="project-tag">Daily briefing</div>
+          <div class="card-meta-right">
+            <span class="card-status status-live">Live</span>
+            <a class="project-link" href="pages/geoganda/">View project &rarr;</a>
+          </div>
+        </div>
+        <h2 class="project-title">Project Geoganda</h2>
+        <p class="project-desc">A daily geospatial news briefing with an agenda, to find the ground truth in geospatial news. Curated by AI, filtered by taste, delivered with a slight edge.</p>
+        <div class="project-meta">
+          <span class="tag">Daily</span>
+          <span class="tag">Remote Sensing</span>
+          <span class="tag">Disaster Risk</span>
+          <span class="tag">Urban Planning</span>
+          <span class="tag">Climate</span>
+        </div>
       </div>
     </div>
+
   </section>
 
   <div class="quotes">
@@ -320,12 +321,10 @@
     const pubDoi = document.getElementById('pub-doi');
     const pubDots = document.getElementById('pub-dots');
     const pubCountDisplay = document.getElementById('pub-count-display');
-
     const typeLabels = { journal: 'Journal article', chapter: 'Book chapter', report: 'Technical report' };
 
     function renderPub(idx) {
       const p = pubs[idx];
-      // Build title with badges
       pubTitle.innerHTML = p.title
         + (p.firstAuthor ? '<span class="pub-first-author">First author</span>' : '')
         + '<span class="pub-type">' + (typeLabels[p.type] || p.type) + '</span>';
