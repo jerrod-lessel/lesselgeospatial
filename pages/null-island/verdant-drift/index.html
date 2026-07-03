@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verdant Drift — a postmortem | LGeo</title>
+<meta name="description" content="An unsupervised vegetation-disturbance detector that worked, then tried to lie. The postmortem on why I stopped it.">
+<!-- This page assumes it lives at:  pages/null-island/verdant-drift/index.html
+     and that BOTH the null-island and verdant-drift style blocks have been
+     pasted into assets/style.css (see the steps in chat). One stylesheet, done. -->
+<link rel="stylesheet" href="../../../assets/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="logo">
+      <img src="/apple-touch-icon.png" alt="LGeo" class="logo-icon" onerror="this.style.display='none'">
+      <span class="logo-text">
+        <span class="logo-line1"><span class="green">L</span>essel</span>
+        <span class="logo-line2"><span class="green">Geo</span>spatial</span>
+      </span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#about">About</a></li>
+      <li><a href="/pages/geoganda/">Geoganda</a></li>
+      <li><a href="https://github.com/jerrod-lessel" target="_blank">GitHub</a></li>
+      <li><a href="https://www.linkedin.com/in/jerrod-lessel-18023875/" target="_blank">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+  </nav>
+
+  <main class="postmortem">
+
+    <section class="section pm-hero">
+      <div class="section-label">Null Island / Postmortem</div>
+      <span class="pm-chip">Stopped</span>
+      <h1 class="pm-title">Verdant Drift</h1>
+      <p class="pm-hook">The detector that caught itself lying.</p>
+
+      <figure class="pm-figure">
+        <!-- ====== HERO IMAGE ======
+             This is a placeholder. When you have the screenshot, delete this whole
+             <div class="pm-hero-ph"> block and drop in ONE line instead:
+
+               <img class="pm-hero-img" src="verdant-drift-hero.png"
+                    alt="Verdant Drift disturbance map, San Luis Obispo and Santa Barbara counties">
+
+             Put the image file in this same folder so that short src just works. -->
+        <div class="pm-hero-ph">
+          <svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="6" y="9" width="36" height="30" rx="2"/>
+            <circle cx="17" cy="19" r="3"/>
+            <path d="M8 33 l10-9 7 6 6-5 9 8"/>
+          </svg>
+          <span class="pm-hero-ph-title">Screenshot goes here</span>
+          <span class="pm-hero-ph-sub">Swap in <code>verdant-drift-hero.png</code> when you have it</span>
+        </div>
+        <!-- Optional: add a one-line caption once the image is in.
+        <figcaption class="pm-figcap">What the map shows, and the study area.</figcaption>
+        -->
+      </figure>
+    </section>
+
+    <article class="section pm-prose" style="padding-top:0;">
+      <p class="pm-dek">Or: how I built a vegetation-disturbance detector, watched it work, and then caught it about to lie to everyone.</p>
+
+      <p>Most of my portfolio is projects that shipped. This one didn't, and I think it might be the most useful thing on here. Stick with me.</p>
+
+      <h2>The pitch</h2>
+      <p>The idea was simple to say and annoying to do. I wanted to detect where Central Coast California vegetation got knocked around (fire, clearing, drought, slow die-off) and then track whether it was coming back, all with no training labels, for zero dollars.</p>
+      <p>The trick: Google's AlphaEarth satellite embeddings give every 10-meter pixel a 64-number "fingerprint" for each year. So I built a stable fingerprint from 2017 to 2019, then measured how far each later year drifted from it using cosine distance. Big drift means something happened. No labels, no training data, just "this pixel stopped looking like itself." Hence the name.</p>
+      <p>Study area: San Luis Obispo plus Santa Barbara counties. Stack: Earth Engine, Colab, Sentinel-2 as a benchmark, MTBS fire perimeters as ground truth. Budget: a free tier and some optimism.</p>
+
+      <h2>The part that genuinely worked &#9989;</h2>
+      <p>Phase 1 actually delivered, and I'm not going to be humble about this part because the numbers are real.</p>
+      <p>I validated the detector against four known 2020 fires (Soda, Branch, Pond, Scorpion) and benchmarked it head-to-head against classical dNBR, the standard automated burn-severity method. With <strong>zero training labels</strong>, the embedding approach hit roughly 0.5 recall and beat automated dNBR on every metric at every threshold, often by 2 to 3x on recall and IoU.</p>
+      <p>The precision looked low, and that's the fun part: it's low <em>on purpose</em>. The fires are tiny needles in a two-county haystack, so precision is structurally capped. And the method detects <em>all</em> disturbance, so when it correctly flagged drought stress and clearing, those counted as "wrong" against a fire-only answer key. The tell was that precision barely moved as I tightened the threshold, which means the false positives weren't noise. They were real change sitting at the same magnitude as fire.</p>
+      <p>Honest footnote I kept making myself say out loud: MTBS perimeters are themselves built from a careful, hand-tuned dNBR workflow. I beat <em>automated</em> dNBR. I did not beat a human analyst with a mouse and a deadline. Different weight class.</p>
+
+      <h2>The blooper reel &#127916;</h2>
+      <p>Before any of that worked, Earth Engine and I had some disagreements.</p>
+      <div class="pm-log">
+        <p><strong>The bookmark incident.</strong> I asked for the whole study area and got back a tall, skinny vertical ribbon of California. Turns out the embedding collection is tiled by UTM zone, and <code>.first()</code> grabbed exactly one tile. I had confidently analyzed a strip of land roughly the width of my own optimism. Fix: <code>.mosaic()</code>.</p>
+        <p><strong>The all-black map.</strong> I rendered my first results and the entire two-county region went solid black. Bold choice for a vegetation map. The culprit was <code>unmask(0)</code>, which helpfully made every zero visible, which was all of them. <code>selfMask()</code> exists for a reason and that reason is me.</p>
+        <p><strong>The phantom dates.</strong> AlphaEarth image IDs are random hashes with no year attached, so filtering by calendar year returned a confident, cheerful nothing. The date hides in a Unix timestamp. I lost a genuinely embarrassing amount of time to this.</p>
+        <p><strong>The polite 500.</strong> My favorite error message in computing: "Earth Engine capacity exceeded." It's so courteous. It means "your computation graph is a monster and I would simply prefer not to." It was right.</p>
+      </div>
+
+      <h2>The plot twist &#127797;</h2>
+      <p>Phase 1 worked, so I got greedy and extended the method across the full 2017 to 2025 record to classify <em>how</em> each disturbance behaved (sudden vs slow, recovering vs not). This is where the project told on itself.</p>
+      <p>I ran a sanity check and my pipeline cheerfully reported that in 2025, about <strong>83% of the wild vegetation outside fire scars had recently been disturbed.</strong> Either the Central Coast had a catastrophic year that somehow made zero news, or my method was wrong.</p>
+      <p>It was the second one.</p>
+      <p>When I broke down the distance values by year, the entire landscape had drifted away from baseline in 2025, even the calm, undisturbed pixels. The floor lifted. And that exposed the real flaw, which had been quietly there the whole time:</p>
+      <blockquote class="pm-crux">Measuring distance from a <em>fixed</em> 2017 to 2019 baseline doesn't actually answer "did this pixel get disturbed." It answers "how different is this pixel-year from 2017 to 2019." A dry year makes the <em>whole map</em> look different from a wet baseline.</blockquote>
+      <p>So my disturbance detector was, in part, a very expensive and elaborate drought thermometer. The drought years lit up everywhere because they <em>were</em> different, not because every acre burned.</p>
+
+      <h2>Why I killed it instead of fixing it &#128298;</h2>
+      <p>Here's the thing. The flaw is fixable. You normalize each year against its own context so you're flagging pixels that moved <em>more than their neighbors did that year</em>. Standard stuff.</p>
+      <p>But the whole point of the project, the crown jewel, was a <strong>recovery</strong> metric: is the land coming back? And recovery is measured at the <em>end</em> of the record. My end year was 2025. The single most poisoned year in the whole dataset.</p>
+      <p>Which meant the headline feature was the one most likely to be confidently, beautifully wrong. I could have built it. It would have rendered a gorgeous interactive map that told landowners their forests weren't recovering when some of them absolutely were.</p>
+      <p>I could have shipped it. It would have looked great. It would also have been lying. &#128579;</p>
+      <p>So I ran the diagnostics, found the confound, confirmed it with percentiles, and called it. Phase 1 stays as an honest result. The recovery map never gets to exist, because a wrong answer that looks right is worse than no answer.</p>
+
+      <h2>What this project is actually for</h2>
+      <p>Not a map. The map died. This is the takeaway:</p>
+      <p>A lot of analysis goes wrong silently, produces something plausible, and ships. The skill that matters isn't building the pipeline. It's noticing when your pipeline is about to hand you a confident lie, and having the discipline to stop.</p>
+      <p>Verdant Drift worked, then it tried to fool me, and I caught it. I'll take that over a pretty map I can't trust.</p>
+      <p>Rest in peace, little detector. You were honest in the end, mostly because I made you. &#127794;</p>
+
+      <hr class="pm-rule">
+      <p class="pm-colophon">Stack: Google Earth Engine, AlphaEarth embeddings, Sentinel-2, MTBS, USDA CDL, Python, Colab.<br>Cause of death: interannual climate variability, and good judgment.</p>
+    </article>
+
+    <section class="section pm-receipts" style="padding-top:0;">
+      <h2 class="pm-h2">The receipts</h2>
+      <p style="font-size:14.5px;line-height:1.9;color:var(--text-mid);">GitHub renders notebooks inline, so the whole thing reads end to end: narration, code, and outputs. Fair warning, called out in its intro: it points at a personal Earth Engine project and an exported asset, so it will not run start to finish for a stranger. It's here as evidence, not a tutorial.</p>
+      <div class="pm-btn-row">
+        <!-- TODO: confirm repo + path + that it's public, then swap both URLs. -->
+        <a class="pm-btn pm-btn--primary" href="https://github.com/jerrod-lessel/verdant-drift/blob/main/verdant_drift_annotated.ipynb" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          Read the annotated notebook
+        </a>
+        <a class="pm-btn" href="https://colab.research.google.com/github/jerrod-lessel/verdant-drift/blob/main/verdant_drift_annotated.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+      </div>
+    </section>
+
+    <section class="section pm-closer" style="padding-top:0;">
+      <span class="pm-label">What this demonstrates</span>
+      <p>Unsupervised disturbance detection on frontier satellite embeddings, a validation design that holds up against real fire perimeters, honest benchmark reasoning, and the judgment to stop a feature that looked good and was wrong.</p>
+      <p class="pm-kicker">The map died so the method could stay trustworthy.</p>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span class="footer-copy">Spatial analysis for a surprisingly spacious world.</span>
+    <ul class="social-links">
+      <li><a href="https://www.linkedin.com/in/jerrod-lessel-18023875/" target="_blank">LinkedIn</a></li>
+      <li><a href="https://github.com/jerrod-lessel" target="_blank">GitHub</a></li>
+      <li><a href="https://www.jerrodlessel.com/" target="_blank">JerrodLessel.com</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    document.querySelector('.nav-toggle').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('open');
+    });
+  </script>
+
+</body>
+</html>
