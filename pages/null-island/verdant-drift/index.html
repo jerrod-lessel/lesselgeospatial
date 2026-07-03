@@ -64,47 +64,47 @@
     <article class="section pm-prose" style="padding-top:0;">
       <p class="pm-dek">Or: how I built a vegetation-disturbance detector, watched it work, and then caught it about to lie to everyone.</p>
 
-      <p>Most of my portfolio is projects that shipped. This one didn't, and I think it might be the most useful thing on here. Stick with me.</p>
+      <p>Most of my portfolio is projects that shipped. This one I didn't, and I think it might be a useful thing to have on here. Stick with me.</p>
 
       <h2>The pitch</h2>
       <p>The idea was simple to say and annoying to do. I wanted to detect where Central Coast California vegetation got knocked around (fire, clearing, drought, slow die-off) and then track whether it was coming back, all with no training labels, for zero dollars.</p>
-      <p>The trick: Google's AlphaEarth satellite embeddings give every 10-meter pixel a 64-number "fingerprint" for each year. So I built a stable fingerprint from 2017 to 2019, then measured how far each later year drifted from it using cosine distance. Big drift means something happened. No labels, no training data, just "this pixel stopped looking like itself." Hence the name.</p>
-      <p>Study area: San Luis Obispo plus Santa Barbara counties. Stack: Earth Engine, Colab, Sentinel-2 as a benchmark, MTBS fire perimeters as ground truth. Budget: a free tier and some optimism.</p>
+      <p>The trick was using Google's AlphaEarth satellite embeddings, which give 10-meter pixels a 64-number "fingerprint" for each year. So I built a stable fingerprint from 2017 to 2019, then measured how far each later year drifted from it (the stable fingerprint) using cosine distance. Big drift means something happened. No labels, no training data, just "this pixel stopped looking like itself." Hence the name.</p>
+      <p>Study area: San Luis Obispo and Santa Barbara counties. Stack: Earth Engine, Colab, Sentinel-2 as a benchmark, MTBS fire perimeters as ground truth. Budget: a free tier for everything and a whole lot of optimism.</p>
 
       <h2>The part that genuinely worked &#9989;</h2>
-      <p>Phase 1 actually delivered, and I'm not going to be humble about this part because the numbers are real.</p>
-      <p>I validated the detector against four known 2020 fires (Soda, Branch, Pond, Scorpion) and benchmarked it head-to-head against classical dNBR, the standard automated burn-severity method. With <strong>zero training labels</strong>, the embedding approach hit roughly 0.5 recall and beat automated dNBR on every metric at every threshold, often by 2 to 3x on recall and IoU.</p>
-      <p>The precision looked low, and that's the fun part: it's low <em>on purpose</em>. The fires are tiny needles in a two-county haystack, so precision is structurally capped. And the method detects <em>all</em> disturbance, so when it correctly flagged drought stress and clearing, those counted as "wrong" against a fire-only answer key. The tell was that precision barely moved as I tightened the threshold, which means the false positives weren't noise. They were real change sitting at the same magnitude as fire.</p>
-      <p>Honest footnote I kept making myself say out loud: MTBS perimeters are themselves built from a careful, hand-tuned dNBR workflow. I beat <em>automated</em> dNBR. I did not beat a human analyst with a mouse and a deadline. Different weight class.</p>
+      <p>Phase 1 actually delivered... sort of.</p>
+      <p>I validated the detector against four known 2020 fires (Soda, Branch, Pond, Scorpion) and benchmarked it head-to-head against classical dNBR (Differenced Normalized Burn Ratio), a standard automated burn-severity method. With <strong>zero training labels</strong>, the embedding approach hit roughly 0.5 recall and beat automated dNBR on every metric at every threshold, often by 2 to 3x on recall and IoU (Intersection over Union).</p>
+      <p>The precision looked low, and that's the fun part, it was low <em>on purpose</em>. The fires are tiny needles in a two-county haystack, so precision is structurally capped. And the method detects <em>all</em> disturbance, so when it correctly flagged drought stress and clearing, those counted as "wrong" against a fire-only answer key. The tell was that precision barely moved as I tightened the threshold, which means the false positives weren't noise. They were real change sitting at the same magnitude as fire.</p>
+      <p>Honest footnote I kept making myself say out loud that MTBS perimeters are themselves built from a careful, hand-tuned dNBR workflow. I beat <em>automated</em> dNBR. I did not beat a human analyst with a mouse and a deadline. Different weight class, that I would have lost miserably at.</p>
 
       <h2>The blooper reel &#127916;</h2>
       <p>Before any of that worked, Earth Engine and I had some disagreements.</p>
       <div class="pm-log">
-        <p><strong>The bookmark incident.</strong> I asked for the whole study area and got back a tall, skinny vertical ribbon of California. Turns out the embedding collection is tiled by UTM zone, and <code>.first()</code> grabbed exactly one tile. I had confidently analyzed a strip of land roughly the width of my own optimism. Fix: <code>.mosaic()</code>.</p>
-        <p><strong>The all-black map.</strong> I rendered my first results and the entire two-county region went solid black. Bold choice for a vegetation map. The culprit was <code>unmask(0)</code>, which helpfully made every zero visible, which was all of them. <code>selfMask()</code> exists for a reason and that reason is me.</p>
-        <p><strong>The phantom dates.</strong> AlphaEarth image IDs are random hashes with no year attached, so filtering by calendar year returned a confident, cheerful nothing. The date hides in a Unix timestamp. I lost a genuinely embarrassing amount of time to this.</p>
-        <p><strong>The polite 500.</strong> My favorite error message in computing: "Earth Engine capacity exceeded." It's so courteous. It means "your computation graph is a monster and I would simply prefer not to." It was right.</p>
+        <p><strong>The bookmark incident.</strong> I asked for the whole study area and got back a tall, skinny vertical ribbon of California. Turns out the embedding collection is tiled by UTM zone, and <code>.first()</code> grabbed exactly one tile. I had confidently analyzed a strip of land roughly the width of my own optimism. The fix was <code>.mosaic()</code>.</p>
+        <p><strong>The all-black map.</strong> I rendered my first results and the entire two-county region went solid black. Bold choice for a vegetation map. The culprit was <code>unmask(0)</code>, which helpfully made every zero visible, which was all of them. <code>selfMask()</code> exists for a reason, we must all use it accordingly.</p>
+        <p><strong>The phantom dates.</strong> AlphaEarth image IDs are random hashes with no year attached, so filtering by calendar year returned a confident, cheerful nothing. The date hides in a Unix timestamp. I lost an embarrassing amount of time to this.</p>
+        <p><strong>The polite 500.</strong> My favorite error message: "Earth Engine capacity exceeded." It's so courteous. It means "your computation graph is a monster and I would simply prefer not to." It was right.</p>
       </div>
 
       <h2>The plot twist &#127797;</h2>
-      <p>Phase 1 worked, so I got greedy and extended the method across the full 2017 to 2025 record to classify <em>how</em> each disturbance behaved (sudden vs slow, recovering vs not). This is where the project told on itself.</p>
+      <p>Phase 1 kinda worked, so I got greedy and extended the method across the full 2017 to 2025 record to classify <em>how</em> each disturbance behaved (sudden vs slow, recovering vs not). This is where the project started to fall apart.</p>
       <p>I ran a sanity check and my pipeline cheerfully reported that in 2025, about <strong>83% of the wild vegetation outside fire scars had recently been disturbed.</strong> Either the Central Coast had a catastrophic year that somehow made zero news, or my method was wrong.</p>
-      <p>It was the second one.</p>
+      <p>You'll be shocked to know that it was the latter.</p>
       <p>When I broke down the distance values by year, the entire landscape had drifted away from baseline in 2025, even the calm, undisturbed pixels. The floor lifted. And that exposed the real flaw, which had been quietly there the whole time:</p>
       <blockquote class="pm-crux">Measuring distance from a <em>fixed</em> 2017 to 2019 baseline doesn't actually answer "did this pixel get disturbed." It answers "how different is this pixel-year from 2017 to 2019." A dry year makes the <em>whole map</em> look different from a wet baseline.</blockquote>
-      <p>So my disturbance detector was, in part, a very expensive and elaborate drought thermometer. The drought years lit up everywhere because they <em>were</em> different, not because every acre burned.</p>
+      <p>So my disturbance detector was, in part, a very expensive (time-wise) and elaborate drought thermometer. The drought years lit up everywhere because they <em>were</em> different, not because every acre burned.</p>
 
       <h2>Why I killed it instead of fixing it &#128298;</h2>
-      <p>Here's the thing. The flaw is fixable. You normalize each year against its own context so you're flagging pixels that moved <em>more than their neighbors did that year</em>. Standard stuff.</p>
-      <p>But the whole point of the project, the crown jewel, was a <strong>recovery</strong> metric: is the land coming back? And recovery is measured at the <em>end</em> of the record. My end year was 2025. The single most poisoned year in the whole dataset.</p>
+      <p>Here's the thing. The flaw is fixable. You normalize each year against its own context so you're flagging pixels that moved <em>more than their neighbors did that year</em>. Standard stuff. I might actually do something like this in a new project just for $#!?'s and giggles.</p>
+      <p>But the whole point of the project, the crown jewel, was a <strong>recovery</strong> metric, answering "Is the land coming back and how?" And recovery is measured at the <em>end</em> of the record. My end year was 2025. One of the driest year in the whole dataset.</p>
       <p>Which meant the headline feature was the one most likely to be confidently, beautifully wrong. I could have built it. It would have rendered a gorgeous interactive map that told landowners their forests weren't recovering when some of them absolutely were.</p>
       <p>I could have shipped it. It would have looked great. It would also have been lying. &#128579;</p>
-      <p>So I ran the diagnostics, found the confound, confirmed it with percentiles, and called it. Phase 1 stays as an honest result. The recovery map never gets to exist, because a wrong answer that looks right is worse than no answer.</p>
+      <p>So I ran the diagnostics, found the issue, confirmed it with percentiles, and called it. Phase 1 stays as an honest result. The recovery map never gets to exist, because a wrong answer that looks right is worse than no answer.</p>
 
       <h2>What this project is actually for</h2>
       <p>Not a map. The map died. This is the takeaway:</p>
-      <p>A lot of analysis goes wrong silently, produces something plausible, and ships. The skill that matters isn't building the pipeline. It's noticing when your pipeline is about to hand you a confident lie, and having the discipline to stop.</p>
-      <p>Verdant Drift worked, then it tried to fool me, and I caught it. I'll take that over a pretty map I can't trust.</p>
+      <p>A lot of analysis goes wrong silently, produces something plausible, and ships. A skill that matters isn't just building the pipeline. It's also noticing when your pipeline is about to hand you a confident lie, and stopping it.</p>
+      <p>Verdant Drift worked a little, then it didn't, and I killed it. I'll take that over a pretty map I can't trust.</p>
       <p>Rest in peace, little detector. You were honest in the end, mostly because I made you. &#127794;</p>
 
       <hr class="pm-rule">
@@ -126,7 +126,7 @@
 
     <section class="section pm-closer" style="padding-top:0;">
       <span class="pm-label">What this demonstrates</span>
-      <p>Unsupervised disturbance detection on frontier satellite embeddings, a validation design that holds up against real fire perimeters, honest benchmark reasoning, and the judgment to stop a feature that looked good and was wrong.</p>
+      <p>Unsupervised disturbance detection on frontier satellite embeddings, a validation design that holds up against real fire perimeters, honest benchmark reasoning, and the judgment to stop a feature that was wrong.</p>
       <p class="pm-kicker">The map died so the method could stay trustworthy.</p>
     </section>
 
