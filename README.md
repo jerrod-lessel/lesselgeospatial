@@ -1,4 +1,4 @@
-# LGeo - Lessel Geospatial
+# LGeoL - Lessel Geospatial Labs
 
 Personal site and project hub for Jerrod Lessel, senior geospatial analyst and remote sensing researcher.
 
